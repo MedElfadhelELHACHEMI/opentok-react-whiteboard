@@ -2,6 +2,17 @@
 
 React shared whiteboard that works with [Opentok](https://github.com/opentok/opentok-react)
 
+Installation
+----
+npm:
+
+`npm i opentok-react-whiteboard`
+
+yarn :
+
+`yarn add opentok-react-whiteboard`
+
+or clone this repo.
 ## Example
 
 ```js
@@ -15,3 +26,4 @@ React shared whiteboard that works with [Opentok](https://github.com/opentok/ope
   <OTWhiteBoard />
 </OTSession>
 ```
+
