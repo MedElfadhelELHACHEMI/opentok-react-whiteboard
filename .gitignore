@@ -1,3 +1,7 @@
+node_modules/
+dist/
+example/bundle.js
+example/config.js
 # Logs
 logs
 *.log

@@ -27,3 +27,11 @@ or clone this repo.
 </OTSession>
 ```
 
+Demo
+----
+```
+git clone https://github.com/MedElfadhelELHACHEMI/opentok-react-whiteboard.git
+yarn
+yarn run example
+```
+
