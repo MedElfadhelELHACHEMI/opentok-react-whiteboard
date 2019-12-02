@@ -1,0 +1,86 @@
+{
+  "name": "opentok-react-whiteboard",
+  "version": "1.0.0",
+  "description": "React shared whiteboard that works with Opentok https://github.com/opentok/opentok-react",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "karma start",
+    "unit": "karma start --single-run",
+    "prepublish": "npm run build",
+    "build": "babel src --out-dir dist && cp src/whiteboard.css dist ",
+    "lint": "eslint src test",
+    "example": "cd example && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MedElfadhelELHACHEMI/opentok-react-whiteboard.git"
+  },
+  "contributors": [
+    {
+      "name": "Med Elfadhel ELHACHEMI",
+      "email": "mohamedelfadhel.elhachemi@gmail.com"
+    }
+  ],
+  "keywords": [
+    "tokbox",
+    "opentok",
+    "react",
+    "react-component",
+    "video",
+    "webrtc",
+    "whiteboard"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MedElfadhelELHACHEMI/opentok-react-whiteboard/issues"
+  },
+  "homepage": "https://github.com/MedElfadhelELHACHEMI/opentok-react-whiteboard#readme",
+  "peerDependencies": {
+    "paper": "^0.12.3",
+    "react": "^15.5.0 || ^16.0.0"
+  },
+  "dependencies": {
+    "paper": "^0.12.3",
+    "prop-types": "^15.5.10"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-2": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1",
+    "browserify-css": "^0.15.0",
+    "enzyme": "^2.6.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jasmine": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.3.0",
+    "karma-babel-preprocessor": "^6.0.1",
+    "karma-browserify": "^5.1.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-spec-reporter": "^0.0.26",
+    "opentok-test-scripts": "^3.2.1",
+    "react": "^15.5.0",
+    "react-addons-test-utils": "^15.5.1",
+    "react-dom": "^15.5.0",
+    "react-test-renderer": "^15.5.4",
+    "travis-multirunner": "^4.5.0",
+    "watchify": "^3.11.1"
+  },
+  "browserify": {
+    "browserify-css": {
+      "autoInject": true,
+      "minify": true,
+      "rootDir": "."
+    },
+    "transform": [
+      "babelify"
+    ]
+  }
+}
