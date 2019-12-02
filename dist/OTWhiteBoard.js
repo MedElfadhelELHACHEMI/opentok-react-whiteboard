@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -6,19 +6,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require('prop-types');
+var _propTypes = require("prop-types");
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _paperCore = require('paper/dist/paper-core');
+var _paperCore = require("paper/dist/paper-core");
 
 var _paperCore2 = _interopRequireDefault(_paperCore);
 
-require('./whiteboard.css');
+require("./whiteboard.css");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -56,7 +56,7 @@ var OTWhiteBoard = function (_Component) {
       // Session clear goes here
       if (_this.state.session) {
         _this.state.session.signal({
-          type: 'otWhiteboard_clear'
+          type: "otWhiteboard_clear"
         });
       }
     };
@@ -69,7 +69,7 @@ var OTWhiteBoard = function (_Component) {
       if (!_this.undoStack.length) return;
       var uuid = _this.undoStack.pop();
       _this.undoWhiteBoard(uuid);
-      _this.sendUpdate('otWhiteboard_undo', uuid);
+      _this.sendUpdate("otWhiteboard_undo", uuid);
     };
 
     _this.undoWhiteBoard = function (uuid) {
@@ -91,7 +91,7 @@ var OTWhiteBoard = function (_Component) {
       if (!_this.redoStack.length) return;
       var uuid = _this.redoStack.pop();
       _this.redoWhiteBoard(uuid);
-      _this.sendUpdate('otWhiteboard_redo', uuid);
+      _this.sendUpdate("otWhiteboard_redo", uuid);
     };
 
     _this.redoWhiteBoard = function (uuid) {
@@ -111,9 +111,8 @@ var OTWhiteBoard = function (_Component) {
 
     _this.draw = function (update) {
       _this.drawHistory.push(update);
-      // console.log(update);
       switch (update.event) {
-        case 'start':
+        case "start":
           var path = new _paperCore2.default.Path();
           path.selected = false;
           path.strokeColor = update.color;
@@ -121,8 +120,8 @@ var OTWhiteBoard = function (_Component) {
           path.strokeCap = _this.strokeCap;
           path.strokeJoin = _this.strokeJoin;
           path.uuid = update.uuid;
-          if (update.mode === 'eraser') {
-            path.blendMode = 'destination-out';
+          if (update.mode === "eraser") {
+            path.blendMode = "destination-out";
             path.strokeWidth = 50;
           }
 
@@ -135,7 +134,7 @@ var OTWhiteBoard = function (_Component) {
 
           _this.pathStack.push(path);
           break;
-        case 'drag':
+        case "drag":
           _this.pathStack.forEach(function (pathItem) {
             if (pathItem.uuid === update.uuid) {
               pathItem.add(update.toX, update.toY);
@@ -143,7 +142,7 @@ var OTWhiteBoard = function (_Component) {
             }
           });
           break;
-        case 'end':
+        case "end":
           _this.pathStack.forEach(function (pathItem) {
             if (pathItem.uuid === update.uuid) {
               _this.undoStack.push(pathItem.uuid);
@@ -162,7 +161,7 @@ var OTWhiteBoard = function (_Component) {
     };
 
     _this.onCanvas = function (event) {
-      if ((event.type === 'mousemove' || event.type === 'touchmove' || event.type === 'mouseout') && !_this.client.dragging) {
+      if ((event.type === "mousemove" || event.type === "touchmove" || event.type === "mouseout") && !_this.client.dragging) {
         // Ignore mouse move Events if we're not dragging
         return;
       }
@@ -179,8 +178,8 @@ var OTWhiteBoard = function (_Component) {
       var offsetY = event.clientY - top;
       var X = offsetX * scaleX;
       var Y = offsetY * scaleY;
-      var mode = _this.erasing ? 'eraser' : 'pen';
-      if (event.type === 'mousedown' || event.type === 'touchstart') {
+      var mode = _this.erasing ? "eraser" : "pen";
+      if (event.type === "mousedown" || event.type === "touchstart") {
         _this.client.dragging = true;
         _this.client.lastX = X;
         _this.client.lastY = Y;
@@ -192,11 +191,11 @@ var OTWhiteBoard = function (_Component) {
           fromY: _this.client.lastY,
           mode: mode,
           color: _this.color,
-          event: 'start'
+          event: "start"
         };
         _this.draw(update);
-        _this.sendUpdate('otWhiteboard_update', update);
-      } else if (event.type === 'mousemove' || event.type === 'touchmove') {
+        _this.sendUpdate("otWhiteboard_update", update);
+      } else if (event.type === "mousemove" || event.type === "touchmove") {
         if (_this.client.dragging) {
           // Build update object
           var _update = {
@@ -206,25 +205,25 @@ var OTWhiteBoard = function (_Component) {
             fromY: _this.client.lastY,
             toX: X,
             toY: Y,
-            event: 'drag'
+            event: "drag"
           };
           _this.count++;
           _this.redoStack = [];
           _this.client.lastX = X;
           _this.client.lastY = Y;
           _this.draw(_update);
-          _this.sendUpdate('otWhiteboard_update', _update);
+          _this.sendUpdate("otWhiteboard_update", _update);
         }
-      } else if (event.type === 'touchcancel' || event.type === 'mouseup' || event.type === 'touchend' || event.type === 'mouseout') {
+      } else if (event.type === "touchcancel" || event.type === "mouseup" || event.type === "touchend" || event.type === "mouseout") {
         if (_this.count) {
           var _update2 = {
             id: _this.state.session && _this.state.session.connection && _this.state.session.connection.connectionId,
             uuid: _this.client.uuid,
-            event: 'end'
+            event: "end"
           };
 
           _this.draw(_update2);
-          _this.sendUpdate('otWhiteboard_update', _update2);
+          _this.sendUpdate("otWhiteboard_update", _update2);
         }
 
         _this.client.dragging = false;
@@ -267,7 +266,7 @@ var OTWhiteBoard = function (_Component) {
 
     _this.requestHistory = function () {
       _this.state.session.signal({
-        type: 'otWhiteboard_request_history'
+        type: "otWhiteboard_request_history"
       });
     };
 
@@ -275,7 +274,7 @@ var OTWhiteBoard = function (_Component) {
       session: props.session || context.session || null
     };
     _this.canvas;
-    _this.colors = [{ backgroundColor: 'black' }, { backgroundColor: 'blue' }, { backgroundColor: 'red' }, { backgroundColor: 'green' }, { backgroundColor: 'orange' }, { backgroundColor: 'purple' }, { backgroundColor: 'brown' }];
+    _this.colors = [{ backgroundColor: "black" }, { backgroundColor: "blue" }, { backgroundColor: "red" }, { backgroundColor: "green" }, { backgroundColor: "orange" }, { backgroundColor: "purple" }, { backgroundColor: "brown" }];
     _this.captureButton;
     _this.client = { dragging: false };
     _this.count = 0; // Grabs the total count of each continuous stroke
@@ -288,16 +287,16 @@ var OTWhiteBoard = function (_Component) {
     _this.batchUpdates = [];
     _this.resizeTimeout;
     _this.iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
-    _this.strokeCap = 'round';
-    _this.strokeJoin = 'round';
+    _this.strokeCap = "round";
+    _this.strokeJoin = "round";
     _this.lineWidth = 1;
-    _this.color = 'black';
+    _this.color = "black";
     _this.erasing;
     return _this;
   }
 
   _createClass(OTWhiteBoard, [{
-    key: 'componentDidMount',
+    key: "componentDidMount",
     value: function componentDidMount() {
       // Create an empty project and a view for the canvas:
       _paperCore2.default.setup(this.canvas);
@@ -315,7 +314,7 @@ var OTWhiteBoard = function (_Component) {
     // eslint-disable-next-line react/sort-comp
 
   }, {
-    key: 'componentDidUpdate',
+    key: "componentDidUpdate",
     value: function componentDidUpdate(prevProps, prevState, snapshot) {
       var _this2 = this;
 
@@ -328,26 +327,26 @@ var OTWhiteBoard = function (_Component) {
             this.requestHistory();
           },
 
-          'signal:otWhiteboard_update': function signalOtWhiteboard_update(event) {
+          "signal:otWhiteboard_update": function signalOtWhiteboard_update(event) {
             if (event.from.connectionId !== _this2.state.session.connection.connectionId) {
               _this2.drawUpdates(JSON.parse(event.data));
             }
           },
-          'signal:otWhiteboard_undo': function signalOtWhiteboard_undo(event) {
+          "signal:otWhiteboard_undo": function signalOtWhiteboard_undo(event) {
             if (event.from.connectionId !== _this2.state.session.connection.connectionId) {
               JSON.parse(event.data).forEach(function (data) {
                 _this2.undoWhiteBoard(data);
               });
             }
           },
-          'signal:otWhiteboard_redo': function signalOtWhiteboard_redo(event) {
+          "signal:otWhiteboard_redo": function signalOtWhiteboard_redo(event) {
             if (event.from.connectionId !== _this2.state.session.connection.connectionId) {
               JSON.parse(event.data).forEach(function (data) {
                 _this2.redoWhiteBoard(data);
               });
             }
           },
-          'signal:otWhiteboard_history': function signalOtWhiteboard_history(event) {
+          "signal:otWhiteboard_history": function signalOtWhiteboard_history(event) {
             // We will receive these from everyone in the room, only listen to the first
             // person. Also the data is chunked together so we need all of that person's
             if (!_this2.drawHistoryReceivedFrom || _this2.drawHistoryReceivedFrom === event.from.connectionId) {
@@ -355,29 +354,31 @@ var OTWhiteBoard = function (_Component) {
               _this2.drawUpdates(JSON.parse(event.data));
             }
           },
-          'signal:otWhiteboard_clear': function signalOtWhiteboard_clear(event) {
-            console.log('clear');
+          "signal:otWhiteboard_clear": function signalOtWhiteboard_clear(event) {
             if (event.from.connectionId !== _this2.state.session.connection.connectionId) {
               _this2.clearCanvas();
             }
           },
-          'signal:otWhiteboard_request_history': function signalOtWhiteboard_request_history(event) {
+          "signal:otWhiteboard_request_history": function signalOtWhiteboard_request_history(event) {
             if (_this2.drawHistory.length > 0) {
-              _this2.batchSignal('otWhiteboard_history', _this2.drawHistory, event.from);
+              _this2.batchSignal("otWhiteboard_history", _this2.drawHistory, event.from);
             }
           }
         });
       }
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this3 = this;
 
       return _react2.default.createElement(
-        'div',
-        { className: 'ot-whiteboard' },
-        _react2.default.createElement('canvas', {
+        "div",
+        {
+          className: "ot-whiteboard",
+          style: { width: this.props.width + 50 + "px" || "550px" }
+        },
+        _react2.default.createElement("canvas", {
           // hidpi="off"
           ref: function ref(_ref) {
             return _this3.canvas = _ref;
@@ -389,46 +390,45 @@ var OTWhiteBoard = function (_Component) {
           onMouseDown: this.onCanvas,
           onMouseMove: this.onCanvas,
           onMouseUp: this.onCanvas,
-          onMouseOut: this.onCanvas,
-          id: 'myCanvas'
+          onMouseOut: this.onCanvas
         }),
         _react2.default.createElement(
-          'div',
-          { className: 'OT_panel' },
+          "div",
+          { className: "OT_panel" },
           this.colors.map(function (color) {
-            return _react2.default.createElement('input', {
-              type: 'button',
+            return _react2.default.createElement("input", {
+              type: "button",
               key: color.backgroundColor,
-              className: 'OT_color',
+              className: "OT_color",
               style: color,
               onClick: function onClick() {
                 return _this3.changeColor(color);
               }
             });
           }),
-          _react2.default.createElement('input', {
-            type: 'button',
+          _react2.default.createElement("input", {
+            type: "button",
             onClick: this.erase,
-            className: 'OT_erase',
-            value: 'Eraser'
+            className: "OT_erase",
+            value: "Eraser"
           }),
-          _react2.default.createElement('input', {
-            type: 'button',
+          _react2.default.createElement("input", {
+            type: "button",
             onClick: this.undo,
-            className: 'OT_capture',
-            value: 'Undo'
+            className: "OT_capture",
+            value: "Undo"
           }),
-          _react2.default.createElement('input', {
-            type: 'button',
+          _react2.default.createElement("input", {
+            type: "button",
             onClick: this.redo,
-            className: 'OT_capture',
-            value: 'Redo'
+            className: "OT_capture",
+            value: "Redo"
           }),
-          _react2.default.createElement('input', {
-            type: 'button',
+          _react2.default.createElement("input", {
+            type: "button",
             onClick: this.clear,
-            className: 'OT_clear',
-            value: 'Clear'
+            className: "OT_clear",
+            value: "Clear"
           })
         )
       );

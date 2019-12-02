@@ -1,23 +1,23 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import paper from 'paper/dist/paper-core';
-import './whiteboard.css';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import paper from "paper/dist/paper-core";
+import "./whiteboard.css";
 
 export default class OTWhiteBoard extends Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      session: props.session || context.session || null,
+      session: props.session || context.session || null
     };
     this.canvas;
     this.colors = [
-      { backgroundColor: 'black' },
-      { backgroundColor: 'blue' },
-      { backgroundColor: 'red' },
-      { backgroundColor: 'green' },
-      { backgroundColor: 'orange' },
-      { backgroundColor: 'purple' },
-      { backgroundColor: 'brown' },
+      { backgroundColor: "black" },
+      { backgroundColor: "blue" },
+      { backgroundColor: "red" },
+      { backgroundColor: "green" },
+      { backgroundColor: "orange" },
+      { backgroundColor: "purple" },
+      { backgroundColor: "brown" }
     ];
     this.captureButton;
     this.client = { dragging: false };
@@ -31,10 +31,10 @@ export default class OTWhiteBoard extends Component {
     this.batchUpdates = [];
     this.resizeTimeout;
     this.iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
-    this.strokeCap = 'round';
-    this.strokeJoin = 'round';
+    this.strokeCap = "round";
+    this.strokeJoin = "round";
     this.lineWidth = 1;
-    this.color = 'black';
+    this.color = "black";
     this.erasing;
   }
 
@@ -63,7 +63,7 @@ export default class OTWhiteBoard extends Component {
     this.count = 0;
   };
 
-  changeColor = (selectedColor) => {
+  changeColor = selectedColor => {
     this.color = selectedColor.backgroundColor;
     this.erasing = false;
   };
@@ -73,7 +73,7 @@ export default class OTWhiteBoard extends Component {
     // Session clear goes here
     if (this.state.session) {
       this.state.session.signal({
-        type: 'otWhiteboard_clear',
+        type: "otWhiteboard_clear"
       });
     }
   };
@@ -86,18 +86,18 @@ export default class OTWhiteBoard extends Component {
     if (!this.undoStack.length) return;
     const uuid = this.undoStack.pop();
     this.undoWhiteBoard(uuid);
-    this.sendUpdate('otWhiteboard_undo', uuid);
+    this.sendUpdate("otWhiteboard_undo", uuid);
   };
 
-  undoWhiteBoard = (uuid) => {
+  undoWhiteBoard = uuid => {
     this.redoStack.push(uuid);
-    this.pathStack.forEach((path) => {
+    this.pathStack.forEach(path => {
       if (path.uuid === uuid) {
         path.visible = false;
         paper.view.update();
       }
     });
-    this.drawHistory.forEach((update) => {
+    this.drawHistory.forEach(update => {
       if (update.uuid === uuid) {
         update.visible = false;
       }
@@ -108,29 +108,28 @@ export default class OTWhiteBoard extends Component {
     if (!this.redoStack.length) return;
     const uuid = this.redoStack.pop();
     this.redoWhiteBoard(uuid);
-    this.sendUpdate('otWhiteboard_redo', uuid);
+    this.sendUpdate("otWhiteboard_redo", uuid);
   };
 
-  redoWhiteBoard = (uuid) => {
+  redoWhiteBoard = uuid => {
     this.undoStack.push(uuid);
-    this.pathStack.forEach((path) => {
+    this.pathStack.forEach(path => {
       if (path.uuid === uuid) {
         path.visible = true;
         paper.view.update();
       }
     });
-    this.drawHistory.forEach((update) => {
+    this.drawHistory.forEach(update => {
       if (update.uuid === uuid) {
         update.visible = true;
       }
     });
   };
 
-  draw = (update) => {
+  draw = update => {
     this.drawHistory.push(update);
-    // console.log(update);
     switch (update.event) {
-      case 'start':
+      case "start":
         const path = new paper.Path();
         path.selected = false;
         path.strokeColor = update.color;
@@ -138,8 +137,8 @@ export default class OTWhiteBoard extends Component {
         path.strokeCap = this.strokeCap;
         path.strokeJoin = this.strokeJoin;
         path.uuid = update.uuid;
-        if (update.mode === 'eraser') {
-          path.blendMode = 'destination-out';
+        if (update.mode === "eraser") {
+          path.blendMode = "destination-out";
           path.strokeWidth = 50;
         }
 
@@ -152,16 +151,16 @@ export default class OTWhiteBoard extends Component {
 
         this.pathStack.push(path);
         break;
-      case 'drag':
-        this.pathStack.forEach((pathItem) => {
+      case "drag":
+        this.pathStack.forEach(pathItem => {
           if (pathItem.uuid === update.uuid) {
             pathItem.add(update.toX, update.toY);
             paper.view.draw();
           }
         });
         break;
-      case 'end':
-        this.pathStack.forEach((pathItem) => {
+      case "end":
+        this.pathStack.forEach(pathItem => {
           if (pathItem.uuid === update.uuid) {
             this.undoStack.push(pathItem.uuid);
             pathItem.simplify();
@@ -172,8 +171,8 @@ export default class OTWhiteBoard extends Component {
     }
   };
 
-  drawUpdates = (updates) => {
-    updates.forEach((updateItem) => {
+  drawUpdates = updates => {
+    updates.forEach(updateItem => {
       this.draw(updateItem);
     });
   };
@@ -187,7 +186,7 @@ export default class OTWhiteBoard extends Component {
         sessionConnected() {
           this.requestHistory();
         },
-        'signal:otWhiteboard_update': (event) => {
+        "signal:otWhiteboard_update": event => {
           if (
             event.from.connectionId !==
             this.state.session.connection.connectionId
@@ -195,27 +194,27 @@ export default class OTWhiteBoard extends Component {
             this.drawUpdates(JSON.parse(event.data));
           }
         },
-        'signal:otWhiteboard_undo': (event) => {
+        "signal:otWhiteboard_undo": event => {
           if (
             event.from.connectionId !==
             this.state.session.connection.connectionId
           ) {
-            JSON.parse(event.data).forEach((data) => {
+            JSON.parse(event.data).forEach(data => {
               this.undoWhiteBoard(data);
             });
           }
         },
-        'signal:otWhiteboard_redo': (event) => {
+        "signal:otWhiteboard_redo": event => {
           if (
             event.from.connectionId !==
             this.state.session.connection.connectionId
           ) {
-            JSON.parse(event.data).forEach((data) => {
+            JSON.parse(event.data).forEach(data => {
               this.redoWhiteBoard(data);
             });
           }
         },
-        'signal:otWhiteboard_history': (event) => {
+        "signal:otWhiteboard_history": event => {
           // We will receive these from everyone in the room, only listen to the first
           // person. Also the data is chunked together so we need all of that person's
           if (
@@ -226,8 +225,7 @@ export default class OTWhiteBoard extends Component {
             this.drawUpdates(JSON.parse(event.data));
           }
         },
-        'signal:otWhiteboard_clear': (event) => {
-          console.log('clear');
+        "signal:otWhiteboard_clear": event => {
           if (
             event.from.connectionId !==
             this.state.session.connection.connectionId
@@ -235,24 +233,24 @@ export default class OTWhiteBoard extends Component {
             this.clearCanvas();
           }
         },
-        'signal:otWhiteboard_request_history': (event) => {
+        "signal:otWhiteboard_request_history": event => {
           if (this.drawHistory.length > 0) {
             this.batchSignal(
-              'otWhiteboard_history',
+              "otWhiteboard_history",
               this.drawHistory,
-              event.from,
+              event.from
             );
           }
-        },
+        }
       });
     }
   }
 
-  onCanvas = (event) => {
+  onCanvas = event => {
     if (
-      (event.type === 'mousemove' ||
-        event.type === 'touchmove' ||
-        event.type === 'mouseout') &&
+      (event.type === "mousemove" ||
+        event.type === "touchmove" ||
+        event.type === "mouseout") &&
       !this.client.dragging
     ) {
       // Ignore mouse move Events if we're not dragging
@@ -267,8 +265,8 @@ export default class OTWhiteBoard extends Component {
     const offsetY = event.clientY - top;
     const X = offsetX * scaleX;
     const Y = offsetY * scaleY;
-    const mode = this.erasing ? 'eraser' : 'pen';
-    if (event.type === 'mousedown' || event.type === 'touchstart') {
+    const mode = this.erasing ? "eraser" : "pen";
+    if (event.type === "mousedown" || event.type === "touchstart") {
       this.client.dragging = true;
       this.client.lastX = X;
       this.client.lastY = Y;
@@ -288,11 +286,11 @@ export default class OTWhiteBoard extends Component {
         fromY: this.client.lastY,
         mode,
         color: this.color,
-        event: 'start',
+        event: "start"
       };
       this.draw(update);
-      this.sendUpdate('otWhiteboard_update', update);
-    } else if (event.type === 'mousemove' || event.type === 'touchmove') {
+      this.sendUpdate("otWhiteboard_update", update);
+    } else if (event.type === "mousemove" || event.type === "touchmove") {
       if (this.client.dragging) {
         // Build update object
         const update = {
@@ -305,20 +303,20 @@ export default class OTWhiteBoard extends Component {
           fromY: this.client.lastY,
           toX: X,
           toY: Y,
-          event: 'drag',
+          event: "drag"
         };
         this.count++;
         this.redoStack = [];
         this.client.lastX = X;
         this.client.lastY = Y;
         this.draw(update);
-        this.sendUpdate('otWhiteboard_update', update);
+        this.sendUpdate("otWhiteboard_update", update);
       }
     } else if (
-      event.type === 'touchcancel' ||
-      event.type === 'mouseup' ||
-      event.type === 'touchend' ||
-      event.type === 'mouseout'
+      event.type === "touchcancel" ||
+      event.type === "mouseup" ||
+      event.type === "touchend" ||
+      event.type === "mouseout"
     ) {
       if (this.count) {
         const update = {
@@ -327,11 +325,11 @@ export default class OTWhiteBoard extends Component {
             this.state.session.connection &&
             this.state.session.connection.connectionId,
           uuid: this.client.uuid,
-          event: 'end',
+          event: "end"
         };
 
         this.draw(update);
-        this.sendUpdate('otWhiteboard_update', update);
+        this.sendUpdate("otWhiteboard_update", update);
       }
 
       this.client.dragging = false;
@@ -343,7 +341,7 @@ export default class OTWhiteBoard extends Component {
     // We send data in small chunks so that they fit in a signal
     // Each packet is maximum ~250 chars, we can fit 8192/250 ~= 32 updates per signal
     const dataCopy = data.slice();
-    const signalError = (err) => {
+    const signalError = err => {
       if (err) {
         console.error(err);
       }
@@ -352,7 +350,7 @@ export default class OTWhiteBoard extends Component {
       const dataChunk = dataCopy.splice(0, Math.min(dataCopy.length, 32));
       const signal = {
         type,
-        data: JSON.stringify(dataChunk),
+        data: JSON.stringify(dataChunk)
       };
       if (toConnection) signal.to = toConnection;
       this.state.session.signal(signal, signalError);
@@ -376,13 +374,16 @@ export default class OTWhiteBoard extends Component {
 
   requestHistory = () => {
     this.state.session.signal({
-      type: 'otWhiteboard_request_history',
+      type: "otWhiteboard_request_history"
     });
   };
 
   render() {
     return (
-      <div className="ot-whiteboard">
+      <div
+        className="ot-whiteboard"
+        style={{ width: `${this.props.width + 50}px` || "550px" }}
+      >
         <canvas
           // hidpi="off"
           ref={ref => (this.canvas = ref)}
@@ -394,7 +395,6 @@ export default class OTWhiteBoard extends Component {
           onMouseMove={this.onCanvas}
           onMouseUp={this.onCanvas}
           onMouseOut={this.onCanvas}
-          id="myCanvas"
         />
         <div className="OT_panel">
           {this.colors.map(color => (
@@ -413,14 +413,6 @@ export default class OTWhiteBoard extends Component {
             value="Eraser"
           />
 
-          {/* <a */}
-          {/*  className="OT_capture" */}
-          {/*  download="whiteboard_capture.png" */}
-          {/*  onClick={() => console.log('capture')} */}
-          {/*  ref={ref => (captureButton = ref)} */}
-          {/* > */}
-          {/*  Capture */}
-          {/* </a> */}
           <input
             type="button"
             onClick={this.undo}
@@ -449,20 +441,20 @@ export default class OTWhiteBoard extends Component {
 OTWhiteBoard.propTypes = {
   session: PropTypes.shape({
     signal: PropTypes.func,
-    on: PropTypes.func,
+    on: PropTypes.func
   }),
   width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired
 };
 OTWhiteBoard.defaultProps = {
   session: null,
   width: 500,
-  height: 500,
+  height: 500
 };
 OTWhiteBoard.contextTypes = {
   session: PropTypes.shape({
     signal: PropTypes.func,
-    on: PropTypes.func,
+    on: PropTypes.func
   }),
-  streams: PropTypes.arrayOf(PropTypes.object),
+  streams: PropTypes.arrayOf(PropTypes.object)
 };

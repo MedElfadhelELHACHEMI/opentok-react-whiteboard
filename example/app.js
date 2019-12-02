@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { OTWhiteBoard } from "../../src";
+
 import { OTSession, preloadScript } from "opentok-react";
+import { OTWhiteBoard } from "../src";
+
+import config from "./config";
 
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       error: null,
       connected: false
@@ -21,6 +23,10 @@ class App extends Component {
     };
   }
 
+  componentWillMount() {
+    OT.registerScreenSharingExtension("chrome", config.CHROME_EXTENSION_ID, 2);
+  }
+
   onError = err => {
     this.setState({ error: `Failed to connect: ${err.message}` });
   };
@@ -34,7 +40,7 @@ class App extends Component {
         eventHandlers={this.sessionEvents}
         onError={this.onError}
       >
-        <OTWhiteBoard width={600} height={600} />
+        <OTWhiteBoard width={560} height={560} />
       </OTSession>
     );
   }

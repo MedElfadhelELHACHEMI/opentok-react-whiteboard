@@ -9,7 +9,7 @@
     "prepublish": "npm run build",
     "build": "babel src --out-dir dist && cp src/whiteboard.css dist ",
     "lint": "eslint src test",
-    "example": "cd example && npm start"
+    "example": "cd example && browserify -t browserify-css -o bundle.js index.js && python -m SimpleHTTPServer"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "react": "^15.5.0 || ^16.0.0"
   },
   "dependencies": {
+    "opentok-react": "^0.9.0",
     "paper": "^0.12.3",
     "prop-types": "^15.5.10"
   },
