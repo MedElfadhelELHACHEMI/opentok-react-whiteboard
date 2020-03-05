@@ -20,6 +20,18 @@ var _paperCore2 = _interopRequireDefault(_paperCore);
 
 require("./whiteboard.css");
 
+var _Undo = require("./Undo");
+
+var _Undo2 = _interopRequireDefault(_Undo);
+
+var _Redo = require("./Redo");
+
+var _Redo2 = _interopRequireDefault(_Redo);
+
+var _Clear = require("./Clear");
+
+var _Clear2 = _interopRequireDefault(_Clear);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -47,7 +59,9 @@ var OTWhiteBoard = function (_Component) {
     };
 
     _this.changeColor = function (selectedColor) {
-      _this.color = selectedColor.backgroundColor;
+      _this.setState({
+        color: selectedColor.backgroundColor
+      });
       _this.erasing = false;
     };
 
@@ -190,7 +204,7 @@ var OTWhiteBoard = function (_Component) {
           fromX: _this.client.lastX,
           fromY: _this.client.lastY,
           mode: mode,
-          color: _this.color,
+          color: _this.state.color,
           event: "start"
         };
         _this.draw(update);
@@ -271,7 +285,8 @@ var OTWhiteBoard = function (_Component) {
     };
 
     _this.state = {
-      session: props.session || context.session || null
+      session: props.session || context.session || null,
+      color: "black"
     };
     _this.canvas;
     _this.colors = [{ backgroundColor: "black" }, { backgroundColor: "blue" }, { backgroundColor: "red" }, { backgroundColor: "green" }, { backgroundColor: "orange" }, { backgroundColor: "purple" }, { backgroundColor: "brown" }];
@@ -290,7 +305,6 @@ var OTWhiteBoard = function (_Component) {
     _this.strokeCap = "round";
     _this.strokeJoin = "round";
     _this.lineWidth = 1;
-    _this.color = "black";
     _this.erasing;
     return _this;
   }
@@ -376,7 +390,10 @@ var OTWhiteBoard = function (_Component) {
         "div",
         {
           className: "ot-whiteboard",
-          style: { width: this.props.width + 50 + "px" || "550px" }
+          style: {
+            height: this.props.height + "px" || "550px",
+            width: this.props.width + "px"
+          }
         },
         _react2.default.createElement("canvas", {
           // hidpi="off"
@@ -395,41 +412,45 @@ var OTWhiteBoard = function (_Component) {
         _react2.default.createElement(
           "div",
           { className: "OT_panel" },
-          this.colors.map(function (color) {
-            return _react2.default.createElement("input", {
+          _react2.default.createElement(
+            "div",
+            { className: "color_palette" },
+            this.colors.map(function (color) {
+              return _react2.default.createElement("div", {
+                key: color.backgroundColor,
+                className: "OT_color " + (_this3.state.color === color.backgroundColor ? "selected" : ""),
+                style: color,
+                onClick: function onClick() {
+                  return _this3.changeColor(color);
+                }
+              });
+            }),
+            _react2.default.createElement("input", {
               type: "button",
-              key: color.backgroundColor,
-              className: "OT_color",
-              style: color,
-              onClick: function onClick() {
-                return _this3.changeColor(color);
-              }
-            });
-          }),
-          _react2.default.createElement("input", {
-            type: "button",
-            onClick: this.erase,
-            className: "OT_erase",
-            value: "Eraser"
-          }),
-          _react2.default.createElement("input", {
-            type: "button",
-            onClick: this.undo,
-            className: "OT_capture",
-            value: "Undo"
-          }),
-          _react2.default.createElement("input", {
-            type: "button",
-            onClick: this.redo,
-            className: "OT_capture",
-            value: "Redo"
-          }),
-          _react2.default.createElement("input", {
-            type: "button",
-            onClick: this.clear,
-            className: "OT_clear",
-            value: "Clear"
-          })
+              onClick: this.erase,
+              className: "OT_erase",
+              value: "Eraser"
+            })
+          ),
+          _react2.default.createElement(
+            "div",
+            { className: "action_buttons" },
+            _react2.default.createElement(
+              "div",
+              { onClick: this.undo, className: "OT_action" },
+              _react2.default.createElement(_Undo2.default, null)
+            ),
+            _react2.default.createElement(
+              "div",
+              { onClick: this.redo, className: "OT_action" },
+              _react2.default.createElement(_Redo2.default, null)
+            ),
+            _react2.default.createElement(
+              "div",
+              { onClick: this.clear, className: "OT_action" },
+              _react2.default.createElement(_Clear2.default, null)
+            )
+          )
         )
       );
     }

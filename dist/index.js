@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.OTWhiteBoard = undefined;
 
-var _OTWhiteBoard = require('./OTWhiteBoard');
+var _OTWhiteBoard = require("./OTWhiteBoard");
 
 var _OTWhiteBoard2 = _interopRequireDefault(_OTWhiteBoard);
 

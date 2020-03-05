@@ -1,66 +1,94 @@
 .ot-whiteboard {
-    position: relative;
+  position: relative;
 }
 .ot-whiteboard canvas {
-    display: block;
-    top: 0;
-    left: 0;
-    border: 1px solid red;
+  display: block;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
 }
 
 .ot-whiteboard div.OT_panel {
-    background-color: #424242;
-    padding: 5px;
-    border-radius: 5px 0 0 5px;
-    position: absolute;
-    top:0px;
-    bottom: 0px;
-    margin: auto;
-    right: 0;
+  background-color: #3d4849;
+  height: 40px;
+  padding: 8px 4px;
+  border-radius: 5px 0 0 5px;
+  position: absolute;
+  top: 0px;
+  margin: auto;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
 }
-
+.ot-whiteboard div.OT_panel div.color_palette,
+.ot-whiteboard div.OT_panel div.action_buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
 .ot-whiteboard div.OT_panel input,
 .ot-whiteboard div.OT_panel .OT_capture {
-    display: block;
-    -webkit-appearance: none;
-    border: none;
-    outline: none;
-    margin-top: 2px;
-    font-size: 9px;
-    font-family: sans-serif;
-    cursor: pointer;
+  display: block;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  margin-top: 2px;
+  font-size: 9px;
+  font-family: sans-serif;
+  cursor: pointer;
 }
 
 .ot-whiteboard div.OT_panel input.OT_clear,
 .ot-whiteboard div.OT_panel .OT_capture {
-    text-decoration: none;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    color: #fff;
-    background-color: #7d7d7d;
-    border-radius: 5px;
-    text-align: center;
-    margin-top: 10px;
-    padding: 0;
+  text-decoration: none;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  color: #fff;
+  background-color: transparent;
+  border-radius: 5px;
+  text-align: center;
+  margin-left: 10px;
+  padding: 0;
 }
 
 .ot-whiteboard div.OT_panel input.OT_erase {
-    width: 40px;
-    height: 40px;
-    color: #fff;
-    background-color: #7d7d7d;
-    border-radius: 50%;
-    text-align: center;
-    padding: 0;
+  width: 30px;
+  height: 30px;
+  color: #fff;
+  background-color: #7d7d7d;
+  border-radius: 50%;
+  text-align: center;
+  padding: 0;
 }
 
-.ot-whiteboard div.OT_panel input.OT_color {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+.ot-whiteboard div.OT_panel div.OT_color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+.selected {
+  box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.6);
 }
 
 .ot-whiteboard div.OT_panel input.OT_selected {
-    border: 4px solid #eaeaea;
+  border: 4px solid #eaeaea;
+}
+.ot-whiteboard div.OT_panel div.action_buttons div.OT_action {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
