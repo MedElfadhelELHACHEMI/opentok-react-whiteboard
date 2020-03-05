@@ -1,7 +1,7 @@
-import OTWhiteBoard from './OTWhiteBoard';
+import OTWhiteBoard from "./OTWhiteBoard";
 
 export default {
-  OTWhiteBoard,
+  OTWhiteBoard
 };
 
 export { OTWhiteBoard };

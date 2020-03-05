@@ -2,12 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import paper from "paper/dist/paper-core";
 import "./whiteboard.css";
+import Undo from "./Undo";
+import Redo from "./Redo";
+import Clear from "./Clear";
 
 export default class OTWhiteBoard extends Component {
   constructor(props, context) {
     super(props);
     this.state = {
-      session: props.session || context.session || null
+      session: props.session || context.session || null,
+      color: "black"
     };
     this.canvas;
     this.colors = [
@@ -34,7 +38,6 @@ export default class OTWhiteBoard extends Component {
     this.strokeCap = "round";
     this.strokeJoin = "round";
     this.lineWidth = 1;
-    this.color = "black";
     this.erasing;
   }
 
@@ -64,7 +67,9 @@ export default class OTWhiteBoard extends Component {
   };
 
   changeColor = selectedColor => {
-    this.color = selectedColor.backgroundColor;
+    this.setState({
+      color: selectedColor.backgroundColor
+    });
     this.erasing = false;
   };
 
@@ -285,7 +290,7 @@ export default class OTWhiteBoard extends Component {
         fromX: this.client.lastX,
         fromY: this.client.lastY,
         mode,
-        color: this.color,
+        color: this.state.color,
         event: "start"
       };
       this.draw(update);
@@ -382,7 +387,10 @@ export default class OTWhiteBoard extends Component {
     return (
       <div
         className="ot-whiteboard"
-        style={{ width: `${this.props.width + 50}px` || "550px" }}
+        style={{
+          height: `${this.props.height}px` || "550px",
+          width: `${this.props.width}px`
+        }}
       >
         <canvas
           // hidpi="off"
@@ -397,42 +405,35 @@ export default class OTWhiteBoard extends Component {
           onMouseOut={this.onCanvas}
         />
         <div className="OT_panel">
-          {this.colors.map(color => (
+          <div className="color_palette">
+            {this.colors.map(color => (
+              <div
+                key={color.backgroundColor}
+                className={`OT_color ${
+                  this.state.color === color.backgroundColor ? "selected" : ""
+                }`}
+                style={color}
+                onClick={() => this.changeColor(color)}
+              />
+            ))}
             <input
               type="button"
-              key={color.backgroundColor}
-              className="OT_color"
-              style={color}
-              onClick={() => this.changeColor(color)}
+              onClick={this.erase}
+              className="OT_erase"
+              value="Eraser"
             />
-          ))}
-          <input
-            type="button"
-            onClick={this.erase}
-            className="OT_erase"
-            value="Eraser"
-          />
-
-          <input
-            type="button"
-            onClick={this.undo}
-            className="OT_capture"
-            value="Undo"
-          />
-
-          <input
-            type="button"
-            onClick={this.redo}
-            className="OT_capture"
-            value="Redo"
-          />
-
-          <input
-            type="button"
-            onClick={this.clear}
-            className="OT_clear"
-            value="Clear"
-          />
+          </div>
+          <div className="action_buttons">
+            <div onClick={this.undo} className="OT_action">
+              <Undo />
+            </div>
+            <div onClick={this.redo} className="OT_action">
+              <Redo />
+            </div>
+            <div onClick={this.clear} className="OT_action">
+              <Clear />
+            </div>
+          </div>
         </div>
       </div>
     );
